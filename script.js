@@ -1,4 +1,5 @@
 
+let prevUrl = '';
 setTimeout(() => {
   findItemUrl();
   document
@@ -6,7 +7,22 @@ setTimeout(() => {
     .addEventListener("click", function () {
       findItemUrl();
     });
+
+    setInterval(()=>{
+      if (!prevUrl){
+        prevUrl = location.href;
+        return
+      }
+
+      if (prevUrl !== location.href){
+        console.log('href was changed')
+        prevUrl = location.href
+        findItemUrl();
+      }
+    },2000);
 }, 2000);
+
+
 
 function findItemUrl() {
   const items = document.querySelectorAll(".market_listing_row_link");
