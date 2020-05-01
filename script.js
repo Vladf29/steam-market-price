@@ -1,5 +1,5 @@
 (function () {
-  const MARK_CLASS_ITEM = 'js-mk-item'
+  const MARK_CLASS_ITEM = "js-mk-item";
   // const axios = require('axios');
   let prevUrl = "";
   let listPrices = [];
@@ -32,25 +32,13 @@
 
   async function findItemUrl() {
     removeMKItem();
+    await delay(1500)
     const items = document.querySelectorAll(".market_listing_row_link");
+    console.log("[ITEMS]", items);
     listPrices = [];
     inProcessItem = true;
 
-    // items.forEach(async (item, index) => {
-    //   const href = item.href
-    //     .split("?")
-    //     .filter((t) => !/filter/.test(t))
-    //     .join("");
-
-    //   listPrices[index] = 0;
-    //   let temp = await getItem(href, index);
-    //   if (!temp) return;
-
-    //   document
-    //     .querySelectorAll(".market_listing_row")
-    //     [index].appendChild(createPriceItem(temp));
-    //   listPrices[index] = temp;
-    // });
+    let funcs = [];
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
@@ -60,15 +48,19 @@
         .join("");
 
       listPrices[i] = { element: item, price: 0 };
-      let temp = await getItem(href, i);
-      if (!temp) continue;
 
-      document
-        .querySelectorAll(".market_listing_row")
-        [i].appendChild(createPriceItem(temp));
-      listPrices[i].price = parseFloat(temp.split(",").join("."));
+      funcs.push(async function () {
+        let temp = await getItem(href, i);
+        if (!temp) return;
+
+        document
+          .querySelectorAll(".market_listing_row")
+          [i].appendChild(createPriceItem(temp));
+        listPrices[i].price = parseFloat(temp.split(",").join("."));
+      });
     }
 
+    await Promise.all(funcs.map((t) => t()));
     inProcessItem = false;
   }
 
@@ -147,7 +139,7 @@
   }
 
   function removeMKItem() {
-    console.log('[REMOVE]')
+    console.log("[REMOVE]");
     const items = document.querySelectorAll(`.${MARK_CLASS_ITEM}`);
     items.forEach((item) => {
       item.remove();
@@ -180,5 +172,11 @@
       btn.onclick = onClick;
       return btn;
     }
+  }
+
+  function delay(n) {
+    return new Promise((res) => {
+      setTimeout(res, n);
+    });
   }
 })();
