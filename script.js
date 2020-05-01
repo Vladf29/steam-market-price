@@ -1,4 +1,5 @@
 (function () {
+  const MARK_CLASS_ITEM = 'js-mk-item'
   // const axios = require('axios');
   let prevUrl = "";
   let listPrices = [];
@@ -139,7 +140,7 @@
       });
 
       absPrices.forEach((item) => {
-        item.element.classList.add("js-mk-item");
+        item.element.classList.add(MARK_CLASS_ITEM);
         parent.appendChild(item.element);
       });
     };
@@ -147,7 +148,7 @@
 
   function removeMKItem() {
     console.log('[REMOVE]')
-    const items = document.querySelectorAll(".js-mk-item");
+    const items = document.querySelectorAll(`.${MARK_CLASS_ITEM}`);
     items.forEach((item) => {
       item.remove();
     });
